@@ -1,7 +1,11 @@
-// Kích thước board
+// ============================================
+// BOARD CONFIGURATION
+// ============================================
 export const BOARD_SIZE = 6;
 
-// Loại unit
+// ============================================
+// UNIT TYPES
+// ============================================
 export const UNIT_TYPES = {
   TANK_ARTILLERY: 'TANK_ARTILLERY',
   TANK_BRAWLER: 'TANK_BRAWLER',
@@ -9,16 +13,20 @@ export const UNIT_TYPES = {
   ALIEN_SMALL: 'ALIEN_SMALL',
 };
 
-// Team
+// ============================================
+// TEAMS
+// ============================================
 export const TEAMS = {
   PLAYER: 'PLAYER',
   ENEMY: 'ENEMY',
 };
 
-// Thông số unit
+// ============================================
+// UNIT STATS
+// ============================================
 export const UNIT_STATS = {
   [UNIT_TYPES.TANK_ARTILLERY]: {
-    name: 'Xe Tăng Pháo',
+    name: 'Tank Artillery',
     hp: 1200,
     armor: 450,
     baseDamage: 400,
@@ -30,7 +38,7 @@ export const UNIT_STATS = {
     team: TEAMS.PLAYER,
   },
   [UNIT_TYPES.TANK_BRAWLER]: {
-    name: 'Xe Tăng Cận Chiến',
+    name: 'Tank Brawler',
     hp: 1500,
     armor: 500,
     baseDamage: 450,
@@ -42,7 +50,7 @@ export const UNIT_STATS = {
     team: TEAMS.PLAYER,
   },
   [UNIT_TYPES.ALIEN_LARGE]: {
-    name: 'Alien Lớn',
+    name: 'Alien Large',
     hp: 1400,
     armor: 300,
     baseDamage: 450,
@@ -54,7 +62,7 @@ export const UNIT_STATS = {
     team: TEAMS.ENEMY,
   },
   [UNIT_TYPES.ALIEN_SMALL]: {
-    name: 'Alien Nhỏ',
+    name: 'Alien Small',
     hp: 800,
     armor: 150,
     baseDamage: 350,
@@ -67,16 +75,21 @@ export const UNIT_STATS = {
   },
 };
 
-// Game actions
+// ============================================
+// GAME ACTIONS
+// ============================================
 export const ACTIONS = {
   SELECT_UNIT: 'SELECT_UNIT',
   MOVE_UNIT: 'MOVE_UNIT',
   ATTACK_UNIT: 'ATTACK_UNIT',
   END_TURN: 'END_TURN',
   RESET_GAME: 'RESET_GAME',
+  RESTORE_GAME: 'RESTORE_GAME', // ✅ NEW
 };
 
-// Game states
+// ============================================
+// GAME STATUS
+// ============================================
 export const GAME_STATUS = {
   PLAYING: 'PLAYING',
   PLAYER_WIN: 'PLAYER_WIN',

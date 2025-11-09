@@ -1,13 +1,16 @@
 import { UNIT_TYPES, UNIT_STATS, TEAMS } from './constants';
 import { getValidMoves, getValidTargets, getManhattanDistance } from './gameLogic';
 
-// AI quyết định hành động cho 1 unit
+// ============================================
+// AI DECISION MAKING FOR ONE UNIT
+// ============================================
+
 export const getAIAction = (unit, allUnits) => {
   const playerUnits = allUnits.filter(u => u.team === TEAMS.PLAYER && u.hp > 0);
   
   if (playerUnits.length === 0) return null;
 
-  // ƯU TIÊN 1: Kiểm tra có thể tấn công không
+  // ✅ PRIORITY 1: CHECK IF CAN ATTACK
   const validTargets = getValidTargets(unit, allUnits);
 
   if (validTargets.length > 0) {
@@ -18,7 +21,7 @@ export const getAIAction = (unit, allUnits) => {
     };
   }
 
-  //  ƯU TIÊN 2: Nếu không tấn công được → di chuyển
+  // ✅ PRIORITY 2: MOVE CLOSER TO ENEMY
   const validMoves = getValidMoves(unit, allUnits);
   
   if (validMoves.length > 0) {
@@ -31,19 +34,22 @@ export const getAIAction = (unit, allUnits) => {
     };
   }
 
-  // ⭐ Không làm gì được
+  // ⭐ NO ACTION AVAILABLE
   return null;
 };
 
-// Chọn mục tiêu để attack
+// ============================================
+// SELECT ATTACK TARGET
+// ============================================
+
 const selectTarget = (attacker, validTargets, allPlayerUnits) => {
   if (attacker.type === UNIT_TYPES.ALIEN_LARGE) {
-    // Alien lớn: ưu tiên HP thấp nhất
+    // Large Alien: Target lowest HP
     return validTargets.reduce((lowest, target) => {
       return target.hp < lowest.hp ? target : lowest;
     });
   } else {
-    // Alien nhỏ: 80% target gần nhất, 20% ưu tiên pháo
+    // Small Alien: 80% nearest, 20% prioritize artillery
     const shouldTargetArtillery = Math.random() < 0.2;
     
     if (shouldTargetArtillery) {
@@ -53,7 +59,7 @@ const selectTarget = (attacker, validTargets, allPlayerUnits) => {
       }
     }
     
-    // Target gần nhất
+    // Target nearest unit
     return validTargets.reduce((closest, target) => {
       const distTarget = getManhattanDistance(attacker.position, target.position);
       const distClosest = getManhattanDistance(attacker.position, closest.position);
@@ -62,9 +68,12 @@ const selectTarget = (attacker, validTargets, allPlayerUnits) => {
   }
 };
 
-// Chọn mục tiêu để di chuyển đến
+// ============================================
+// SELECT MOVE TARGET
+// ============================================
+
 const selectMoveTarget = (unit, playerUnits) => {
-  // Tìm player unit gần nhất
+  // Find nearest player unit
   return playerUnits.reduce((closest, target) => {
     const distTarget = getManhattanDistance(unit.position, target.position);
     const distClosest = getManhattanDistance(unit.position, closest.position);
@@ -72,7 +81,10 @@ const selectMoveTarget = (unit, playerUnits) => {
   });
 };
 
-// Tìm ô di chuyển tốt nhất (gần target nhất)
+// ============================================
+// FIND BEST MOVE POSITION
+// ============================================
+
 const findBestMove = (currentPos, validMoves, targetPos) => {
   return validMoves.reduce((best, move) => {
     const distMove = getManhattanDistance(move, targetPos);
@@ -81,16 +93,21 @@ const findBestMove = (currentPos, validMoves, targetPos) => {
   });
 };
 
-// ⭐ THỰC HIỆN AI TURN - ĐÃ FIX
+// ============================================
+// ✅ EXECUTE AI TURN - FIXED TO COUNTER ATTACK
+// ============================================
+
 export const executeAITurn = (units) => {
+  // Get all alive enemy units that haven't acted
   const enemyUnits = units.filter(u => 
     u.team === TEAMS.ENEMY && 
     u.hp > 0 && 
-    !u.hasActed
+    !u.hasActed // Important: check hasActed
   );
   
   const actions = [];
 
+  // Each enemy unit decides action
   enemyUnits.forEach(unit => {
     const action = getAIAction(unit, units);
     if (action) {
