@@ -139,33 +139,27 @@ export const gameReducer = (state, action) => {
     // ----------------------------------------
     // SELECT UNIT - FIXED FOR AI
     // ----------------------------------------
-    case ACTIONS.SELECT_UNIT: {
-      const unit = state.units.find(u => u.id === action.unitId);
+    // LOGIC MỚI (ĐƠN GIẢN HƠN)
+case ACTIONS.SELECT_UNIT: {
+  const unit = state.units.find(u => u.id === action.unitId);
 
-      // Kiểm tra chung: unit phải tồn tại và còn sống
-      if (!unit || unit.hp <= 0) {
-        return state;
-      }
+  // 1. Kiểm tra unit tồn tại và còn sống
+  if (!unit || unit.hp <= 0) {
+    return state;
+  }
 
-      // Kiểm tra xem unit có thuộc về team đang chơi hay không
-      // và unit đó chưa hành động
-      if (
-        unit.team !== state.currentTurn ||
-        unit.hasActed
-      ) {
-        // Nếu là PLAYER click vào unit ENEMY (không phải để tấn công)
-        // hoặc click vào unit đã hành động, thì không làm gì cả
-        if (state.currentTurn === TEAMS.PLAYER) {
-          return state;
-        }
-      }
+  // 2. CHO PHÉP select unit của current turn (bất kể hasActed)
+  //    Vì AI CẦN select unit để thực hiện action
+  if (unit.team === state.currentTurn) {
+    return {
+      ...state,
+      selectedUnit: unit,
+    };
+  }
 
-      // Nếu tất cả điều kiện hợp lệ (cho cả Player và AI)
-      return {
-        ...state,
-        selectedUnit: unit,
-      };
-    }
+  // 3. Từ chối các trường hợp khác
+  return state;
+}
 
     // ----------------------------------------
     // MOVE UNIT
@@ -178,6 +172,10 @@ export const gameReducer = (state, action) => {
           ? { ...u, position: action.position }
           : u
       );
+      if (state.selectedUnit.hasActed) {
+  console.log('❌ Unit đã hành động');
+  return state;
+}
 
       return {
         ...state,
@@ -199,6 +197,11 @@ export const gameReducer = (state, action) => {
       const defender = state.units.find(u => u.id === action.targetId);
 
       if (!defender) return state;
+
+      if (state.selectedUnit.hasActed) {
+  console.log('❌ Unit đã hành động');
+  return state;
+}
 
       // Calculate damage
       const damageResult = calculateDamage(attacker, defender);

@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 const StoryScreen = ({ levelId, onComplete, onSkip }) => {
   const [currentText, setCurrentText] = useState('');
   const [textIndex, setTextIndex] = useState(0);
   const [showSkipButton, setShowSkipButton] = useState(false);
   const [isReady, setIsReady] = useState(false);
-const completeCalled = useRef(false);
+  const completeCalled = useRef(false);
 
   const stories = {
     1: {
@@ -63,34 +63,54 @@ const completeCalled = useRef(false);
 
   const story = stories[levelId] || stories[1];
 
- // useEffect 1: Reset khi level thay đổi
-useEffect(() => {
-  setIsReady(false);
-  setCurrentText('');
-  setTextIndex(0);
-  completeCalled.current = false;
-  
-  const timer = setTimeout(() => setIsReady(true), 100);
-  return () => clearTimeout(timer);
-}, [levelId]);
-
-  // useEffect 2: Chạy animation (CHỈ KHI isReady = true)
-useEffect(() => {
-  if (!isReady) return;
-  
-  if (textIndex < story.texts.length) {
-    // ... hiển thị text
-  } else if (textIndex === story.texts.length && textIndex > 0) {
-    const timer = setTimeout(() => {
-      if (!completeCalled.current) {
-        completeCalled.current = true;
-        setIsReady(false);
-        onComplete();
-      }
-    }, 2000);
+  // useEffect 1: Reset khi level thay đổi
+  useEffect(() => {
+    setIsReady(false);
+    setCurrentText('');
+    setTextIndex(0);
+    setShowSkipButton(false);
+    completeCalled.current = false;
+    
+    const timer = setTimeout(() => setIsReady(true), 100);
     return () => clearTimeout(timer);
-  }
-}, [textIndex, isReady, story.texts, onComplete]);
+  }, [levelId]);
+
+  // useEffect 2: Chạy animation text
+  useEffect(() => {
+    if (!isReady) return;
+    
+    if (textIndex < story.texts.length) {
+      const text = story.texts[textIndex];
+      let charIndex = 0;
+      
+      setShowSkipButton(true);
+      
+      const typeInterval = setInterval(() => {
+        if (charIndex <= text.length) {
+          setCurrentText(text.substring(0, charIndex));
+          charIndex++;
+        } else {
+          clearInterval(typeInterval);
+          // Chờ 1s rồi chuyển sang text tiếp theo
+          setTimeout(() => {
+            setTextIndex(prev => prev + 1);
+          }, 1000);
+        }
+      }, 50);
+      
+      return () => clearInterval(typeInterval);
+      
+    } else if (textIndex === story.texts.length && textIndex > 0) {
+      const timer = setTimeout(() => {
+        if (!completeCalled.current) {
+          completeCalled.current = true;
+          setIsReady(false);
+          onComplete();
+        }
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [textIndex, isReady, story.texts, onComplete]);
 
   return (
     <div style={{
