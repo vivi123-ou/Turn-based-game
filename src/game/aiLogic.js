@@ -39,18 +39,33 @@ export const getAIAction = (unit, allUnits) => {
 };
 
 // ============================================
-// SELECT ATTACK TARGET
+// SELECT ATTACK TARGET - IMPROVED STRATEGY
 // ============================================
 
 const selectTarget = (attacker, validTargets, allPlayerUnits) => {
+  // Strategy cho từng loại unit
   if (attacker.type === UNIT_TYPES.ALIEN_LARGE) {
-    // Large Alien: Target lowest HP
+    // Large Alien: Ưu tiên Artillery (30%), sau đó lowest HP (70%)
+    const shouldTargetArtillery = Math.random() < 0.3;
+    
+    if (shouldTargetArtillery) {
+      const artilleryTargets = validTargets.filter(t => t.type === UNIT_TYPES.TANK_ARTILLERY);
+      if (artilleryTargets.length > 0) {
+        // Target artillery with lowest HP
+        return artilleryTargets.reduce((lowest, target) => {
+          return target.hp < lowest.hp ? target : lowest;
+        });
+      }
+    }
+    
+    // Target lowest HP
     return validTargets.reduce((lowest, target) => {
       return target.hp < lowest.hp ? target : lowest;
     });
-  } else {
-    // Small Alien: 80% nearest, 20% prioritize artillery
-    const shouldTargetArtillery = Math.random() < 0.2;
+    
+  } else if (attacker.type === UNIT_TYPES.ALIEN_SMALL) {
+    // Small Alien: Aggressive - 50% artillery, 50% nearest
+    const shouldTargetArtillery = Math.random() < 0.5;
     
     if (shouldTargetArtillery) {
       const artilleryTargets = validTargets.filter(t => t.type === UNIT_TYPES.TANK_ARTILLERY);
@@ -66,13 +81,33 @@ const selectTarget = (attacker, validTargets, allPlayerUnits) => {
       return distTarget < distClosest ? target : closest;
     });
   }
+
+  // Default: target nearest
+  return validTargets.reduce((closest, target) => {
+    const distTarget = getManhattanDistance(attacker.position, target.position);
+    const distClosest = getManhattanDistance(attacker.position, closest.position);
+    return distTarget < distClosest ? target : closest;
+  });
 };
 
 // ============================================
-// SELECT MOVE TARGET
+// SELECT MOVE TARGET - IMPROVED
 // ============================================
 
 const selectMoveTarget = (unit, playerUnits) => {
+  // Large Alien: Prefer artillery
+  if (unit.type === UNIT_TYPES.ALIEN_LARGE) {
+    const artilleryUnits = playerUnits.filter(u => u.type === UNIT_TYPES.TANK_ARTILLERY);
+    if (artilleryUnits.length > 0) {
+      // Find nearest artillery
+      return artilleryUnits.reduce((closest, target) => {
+        const distTarget = getManhattanDistance(unit.position, target.position);
+        const distClosest = getManhattanDistance(unit.position, closest.position);
+        return distTarget < distClosest ? target : closest;
+      });
+    }
+  }
+
   // Find nearest player unit
   return playerUnits.reduce((closest, target) => {
     const distTarget = getManhattanDistance(unit.position, target.position);
@@ -94,7 +129,7 @@ const findBestMove = (currentPos, validMoves, targetPos) => {
 };
 
 // ============================================
-// ✅ EXECUTE AI TURN - FIXED TO COUNTER ATTACK
+// EXECUTE AI TURN - PROPER IMPLEMENTATION
 // ============================================
 
 export const executeAITurn = (units) => {
@@ -102,7 +137,7 @@ export const executeAITurn = (units) => {
   const enemyUnits = units.filter(u => 
     u.team === TEAMS.ENEMY && 
     u.hp > 0 && 
-    !u.hasActed // Important: check hasActed
+    !u.hasActed
   );
   
   const actions = [];
@@ -118,5 +153,7 @@ export const executeAITurn = (units) => {
     }
   });
 
+  console.log('🤖 AI Turn:', actions.length, 'actions planned');
+  
   return actions;
 };

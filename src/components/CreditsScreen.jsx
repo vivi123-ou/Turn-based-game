@@ -27,7 +27,7 @@ const CreditsScreen = ({ onClose }) => {
           borderRadius: '16px',
           marginBottom: '30px',
         }}>
-          <CreditItem title="Game Design & Development" name="Your Name" />
+          <CreditItem title="Game Design & Development" name="Lê Quỳnh Minh Vân" />
           <CreditItem title="Programming" name="React + JavaScript" />
           <CreditItem title="Game Logic" name="Turn-Based Strategy System" />
           <CreditItem title="AI Logic" name="Smart Enemy Behavior" />

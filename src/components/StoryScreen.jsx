@@ -59,11 +59,16 @@ const StoryScreen = ({ levelId, onComplete, onSkip }) => {
     },
   };
 
-  const story = stories[levelId];
+  const story = stories[levelId] || stories[1];
 
   useEffect(() => {
+    // Reset state when level changes
+    setCurrentText('');
+    setTextIndex(0);
     setShowSkipButton(true);
-    
+  }, [levelId]);
+
+  useEffect(() => {
     if (textIndex < story.texts.length) {
       const timer = setTimeout(() => {
         setCurrentText(story.texts[textIndex]);
@@ -76,7 +81,7 @@ const StoryScreen = ({ levelId, onComplete, onSkip }) => {
       }, 2000);
       return () => clearTimeout(timer);
     }
-  }, [textIndex, story, onComplete]);
+  }, [textIndex, story.texts, onComplete]);
 
   return (
     <div style={{
@@ -102,6 +107,7 @@ const StoryScreen = ({ levelId, onComplete, onSkip }) => {
         fontSize: '48px',
         marginBottom: '40px',
         textAlign: 'center',
+        color: 'white',
       }}>
         {story.title}
       </h1>
@@ -116,6 +122,7 @@ const StoryScreen = ({ levelId, onComplete, onSkip }) => {
         backgroundColor: 'rgba(255,255,255,0.1)',
         borderRadius: '16px',
         animation: 'fadeIn 1s',
+        color: 'white',
       }}>
         {currentText}
       </div>
@@ -124,6 +131,7 @@ const StoryScreen = ({ levelId, onComplete, onSkip }) => {
         marginTop: '40px',
         fontSize: '14px',
         opacity: 0.6,
+        color: 'white',
       }}>
         {textIndex} / {story.texts.length}
       </div>
