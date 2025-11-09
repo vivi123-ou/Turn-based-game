@@ -6,12 +6,12 @@ import {
 } from './gameLogic';
 
 // ============================================
-// LEVEL CONFIGURATIONS
+// LEVEL CONFIGURATIONS - ENHANCED
 // ============================================
 
 export const getLevelConfig = (level) => {
   const configs = {
-    1: { // Easy - Tutorial Level
+    1: { // Easy - Tutorial Level (2v2)
       playerUnits: [
         { id: 'tank1', type: UNIT_TYPES.TANK_ARTILLERY, position: { x: 0, y: 2 } },
         { id: 'tank2', type: UNIT_TYPES.TANK_BRAWLER, position: { x: 0, y: 3 } },
@@ -21,59 +21,59 @@ export const getLevelConfig = (level) => {
         { id: 'alien2', type: UNIT_TYPES.ALIEN_SMALL, position: { x: 5, y: 3 } },
       ],
     },
-    2: { // Easy - First Real Battle
-      playerUnits: [
-        { id: 'tank1', type: UNIT_TYPES.TANK_ARTILLERY, position: { x: 0, y: 1 } },
-        { id: 'tank2', type: UNIT_TYPES.TANK_BRAWLER, position: { x: 0, y: 3 } },
-        { id: 'tank3', type: UNIT_TYPES.TANK_BRAWLER, position: { x: 0, y: 4 } },
-      ],
-      enemyUnits: [
-        { id: 'alien1', type: UNIT_TYPES.ALIEN_SMALL, position: { x: 5, y: 1 } },
-        { id: 'alien2', type: UNIT_TYPES.ALIEN_LARGE, position: { x: 5, y: 3 } },
-        { id: 'alien3', type: UNIT_TYPES.ALIEN_SMALL, position: { x: 5, y: 4 } },
-      ],
-    },
-    3: { // Medium - Urban Warfare
+    2: { // Easy - First Real Battle (3v3)
       playerUnits: [
         { id: 'tank1', type: UNIT_TYPES.TANK_ARTILLERY, position: { x: 0, y: 1 } },
         { id: 'tank2', type: UNIT_TYPES.TANK_BRAWLER, position: { x: 0, y: 2 } },
         { id: 'tank3', type: UNIT_TYPES.TANK_BRAWLER, position: { x: 0, y: 4 } },
       ],
       enemyUnits: [
-        { id: 'alien1', type: UNIT_TYPES.ALIEN_LARGE, position: { x: 5, y: 1 } },
-        { id: 'alien2', type: UNIT_TYPES.ALIEN_SMALL, position: { x: 5, y: 2 } },
-        { id: 'alien3', type: UNIT_TYPES.ALIEN_LARGE, position: { x: 5, y: 3 } },
-        { id: 'alien4', type: UNIT_TYPES.ALIEN_SMALL, position: { x: 5, y: 4 } },
+        { id: 'alien1', type: UNIT_TYPES.ALIEN_SMALL, position: { x: 5, y: 0 } },
+        { id: 'alien2', type: UNIT_TYPES.ALIEN_LARGE, position: { x: 5, y: 2 } },
+        { id: 'alien3', type: UNIT_TYPES.ALIEN_SMALL, position: { x: 5, y: 5 } },
       ],
     },
-    4: { // Hard - Desert Storm
+    3: { // Medium - Urban Warfare (3v4)
+      playerUnits: [
+        { id: 'tank1', type: UNIT_TYPES.TANK_ARTILLERY, position: { x: 0, y: 1 } },
+        { id: 'tank2', type: UNIT_TYPES.TANK_BRAWLER, position: { x: 0, y: 2 } },
+        { id: 'tank3', type: UNIT_TYPES.TANK_BRAWLER, position: { x: 0, y: 4 } },
+      ],
+      enemyUnits: [
+        { id: 'alien1', type: UNIT_TYPES.ALIEN_LARGE, position: { x: 5, y: 0 } },
+        { id: 'alien2', type: UNIT_TYPES.ALIEN_SMALL, position: { x: 5, y: 2 } },
+        { id: 'alien3', type: UNIT_TYPES.ALIEN_LARGE, position: { x: 5, y: 3 } },
+        { id: 'alien4', type: UNIT_TYPES.ALIEN_SMALL, position: { x: 5, y: 5 } },
+      ],
+    },
+    4: { // Hard - Desert Storm (4v5)
       playerUnits: [
         { id: 'tank1', type: UNIT_TYPES.TANK_ARTILLERY, position: { x: 0, y: 0 } },
-        { id: 'tank2', type: UNIT_TYPES.TANK_ARTILLERY, position: { x: 0, y: 2 } },
+        { id: 'tank2', type: UNIT_TYPES.TANK_ARTILLERY, position: { x: 1, y: 2 } },
         { id: 'tank3', type: UNIT_TYPES.TANK_BRAWLER, position: { x: 0, y: 3 } },
         { id: 'tank4', type: UNIT_TYPES.TANK_BRAWLER, position: { x: 0, y: 5 } },
       ],
       enemyUnits: [
         { id: 'alien1', type: UNIT_TYPES.ALIEN_LARGE, position: { x: 5, y: 0 } },
-        { id: 'alien2', type: UNIT_TYPES.ALIEN_SMALL, position: { x: 5, y: 1 } },
+        { id: 'alien2', type: UNIT_TYPES.ALIEN_SMALL, position: { x: 4, y: 1 } },
         { id: 'alien3', type: UNIT_TYPES.ALIEN_LARGE, position: { x: 5, y: 2 } },
-        { id: 'alien4', type: UNIT_TYPES.ALIEN_SMALL, position: { x: 5, y: 4 } },
+        { id: 'alien4', type: UNIT_TYPES.ALIEN_SMALL, position: { x: 4, y: 4 } },
         { id: 'alien5', type: UNIT_TYPES.ALIEN_LARGE, position: { x: 5, y: 5 } },
       ],
     },
-    5: { // Very Hard - Final Stand
+    5: { // Very Hard - Final Stand (4v6)
       playerUnits: [
         { id: 'tank1', type: UNIT_TYPES.TANK_ARTILLERY, position: { x: 0, y: 1 } },
-        { id: 'tank2', type: UNIT_TYPES.TANK_ARTILLERY, position: { x: 0, y: 4 } },
+        { id: 'tank2', type: UNIT_TYPES.TANK_ARTILLERY, position: { x: 1, y: 4 } },
         { id: 'tank3', type: UNIT_TYPES.TANK_BRAWLER, position: { x: 0, y: 2 } },
         { id: 'tank4', type: UNIT_TYPES.TANK_BRAWLER, position: { x: 0, y: 3 } },
       ],
       enemyUnits: [
         { id: 'alien1', type: UNIT_TYPES.ALIEN_LARGE, position: { x: 5, y: 0 } },
-        { id: 'alien2', type: UNIT_TYPES.ALIEN_SMALL, position: { x: 5, y: 1 } },
+        { id: 'alien2', type: UNIT_TYPES.ALIEN_SMALL, position: { x: 4, y: 1 } },
         { id: 'alien3', type: UNIT_TYPES.ALIEN_LARGE, position: { x: 5, y: 2 } },
         { id: 'alien4', type: UNIT_TYPES.ALIEN_LARGE, position: { x: 5, y: 3 } },
-        { id: 'alien5', type: UNIT_TYPES.ALIEN_SMALL, position: { x: 5, y: 4 } },
+        { id: 'alien5', type: UNIT_TYPES.ALIEN_SMALL, position: { x: 4, y: 4 } },
         { id: 'alien6', type: UNIT_TYPES.ALIEN_LARGE, position: { x: 5, y: 5 } },
       ],
     },
@@ -90,7 +90,6 @@ export const createInitialUnits = (level = 1) => {
   const config = getLevelConfig(level);
   const units = [];
 
-  // Create player units
   config.playerUnits.forEach(unitConfig => {
     const stats = UNIT_STATS[unitConfig.type];
     units.push({
@@ -103,7 +102,6 @@ export const createInitialUnits = (level = 1) => {
     });
   });
 
-  // Create enemy units
   config.enemyUnits.forEach(unitConfig => {
     const stats = UNIT_STATS[unitConfig.type];
     units.push({
@@ -139,30 +137,33 @@ export const initialState = {
 export const gameReducer = (state, action) => {
   switch (action.type) {
     // ----------------------------------------
-    // SELECT UNIT
+    // SELECT UNIT - FIXED FOR AI
     // ----------------------------------------
     case ACTIONS.SELECT_UNIT: {
       const unit = state.units.find(u => u.id === action.unitId);
-      
-      // Không cho select nếu:
-      // - Unit không tồn tại
-      // - Không phải team player
-      // - Unit đã hành động
-      // - Unit đã chết
-      // - Không phải lượt player
-      if (
-        !unit || 
-        unit.team !== TEAMS.PLAYER || 
-        unit.hasActed || 
-        unit.hp <= 0 ||
-        state.currentTurn !== TEAMS.PLAYER
-      ) {
+
+      // Kiểm tra chung: unit phải tồn tại và còn sống
+      if (!unit || unit.hp <= 0) {
         return state;
       }
 
-      return { 
-        ...state, 
-        selectedUnit: unit 
+      // Kiểm tra xem unit có thuộc về team đang chơi hay không
+      // và unit đó chưa hành động
+      if (
+        unit.team !== state.currentTurn ||
+        unit.hasActed
+      ) {
+        // Nếu là PLAYER click vào unit ENEMY (không phải để tấn công)
+        // hoặc click vào unit đã hành động, thì không làm gì cả
+        if (state.currentTurn === TEAMS.PLAYER) {
+          return state;
+        }
+      }
+
+      // Nếu tất cả điều kiện hợp lệ (cho cả Player và AI)
+      return {
+        ...state,
+        selectedUnit: unit,
       };
     }
 
@@ -273,17 +274,22 @@ export const gameReducer = (state, action) => {
         currentLevel: level,
       };
     }
+
+    // ----------------------------------------
+    // RESTORE GAME
+    // ----------------------------------------
     case ACTIONS.RESTORE_GAME: {
-  const { gameState } = action;
-  return {
-    units: gameState.units || createInitialUnits(1),
-    selectedUnit: null,
-    currentTurn: gameState.currentTurn || TEAMS.PLAYER,
-    gameStatus: GAME_STATUS.PLAYING,
-    combatLog: gameState.combatLog || [],
-    currentLevel: gameState.currentLevel || 1,
-  };
-}
+      const { gameState } = action;
+      return {
+        units: gameState.units || createInitialUnits(1),
+        selectedUnit: null,
+        currentTurn: gameState.currentTurn || TEAMS.PLAYER,
+        gameStatus: GAME_STATUS.PLAYING,
+        combatLog: gameState.combatLog || [],
+        currentLevel: gameState.currentLevel || 1,
+      };
+    }
+
     // ----------------------------------------
     // DEFAULT
     // ----------------------------------------
@@ -291,9 +297,5 @@ export const gameReducer = (state, action) => {
       return state;
   }
 };
-
-// ============================================
-// EXPORT
-// ============================================
 
 export default gameReducer;

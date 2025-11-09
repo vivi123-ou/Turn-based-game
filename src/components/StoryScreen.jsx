@@ -69,19 +69,22 @@ const StoryScreen = ({ levelId, onComplete, onSkip }) => {
   }, [levelId]);
 
   useEffect(() => {
-    if (textIndex < story.texts.length) {
-      const timer = setTimeout(() => {
-        setCurrentText(story.texts[textIndex]);
-        setTextIndex(textIndex + 1);
-      }, 2000);
-      return () => clearTimeout(timer);
-    } else {
-      const timer = setTimeout(() => {
-        onComplete();
-      }, 2000);
-      return () => clearTimeout(timer);
-    }
-  }, [textIndex, story.texts, onComplete]);
+  if (textIndex < story.texts.length) {
+    // Hiển thị text bình thường
+    const timer = setTimeout(() => {
+      setCurrentText(story.texts[textIndex]);
+      setTextIndex(textIndex + 1);
+    }, 2000);
+    return () => clearTimeout(timer);
+  } else if (textIndex === story.texts.length && textIndex > 0) {
+    // CHỈ gọi onComplete khi đã chạy hết
+    // textIndex > 0 ngăn chặn chạy khi vừa reset
+    const timer = setTimeout(() => {
+      onComplete();
+    }, 2000);
+    return () => clearTimeout(timer);
+  }
+}, [textIndex, story.texts, onComplete]);
 
   return (
     <div style={{
