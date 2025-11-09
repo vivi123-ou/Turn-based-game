@@ -137,45 +137,59 @@ export const initialState = {
 export const gameReducer = (state, action) => {
   switch (action.type) {
     // ----------------------------------------
-    // SELECT UNIT - FIXED FOR AI
+    // SELECT UNIT - FIXED ✅
     // ----------------------------------------
-    // LOGIC MỚI (ĐƠN GIẢN HƠN)
-case ACTIONS.SELECT_UNIT: {
-  const unit = state.units.find(u => u.id === action.unitId);
+    case ACTIONS.SELECT_UNIT: {
+      const unit = state.units.find(u => u.id === action.unitId);
 
-  // 1. Kiểm tra unit tồn tại và còn sống
-  if (!unit || unit.hp <= 0) {
-    return state;
-  }
+      // Kiểm tra unit tồn tại và còn sống
+      if (!unit || unit.hp <= 0) {
+        console.log('❌ Unit không tồn tại hoặc đã chết');
+        return state;
+      }
 
-  // 2. CHO PHÉP select unit của current turn (bất kể hasActed)
-  //    Vì AI CẦN select unit để thực hiện action
-  if (unit.team === state.currentTurn) {
-    return {
-      ...state,
-      selectedUnit: unit,
-    };
-  }
+      // ✅ CHO PHÉP SELECT UNIT CỦA CURRENT TURN (bất kể hasActed)
+      // Vì AI cần select unit để thực hiện hành động
+      if (unit.team === state.currentTurn) {
+        console.log(`✅ Selected ${unit.id} (hasActed: ${unit.hasActed})`);
+        return {
+          ...state,
+          selectedUnit: unit,
+        };
+      }
 
-  // 3. Từ chối các trường hợp khác
-  return state;
-}
+      // Nếu PLAYER click vào ENEMY unit (để xem thông tin)
+      if (state.currentTurn === TEAMS.PLAYER && unit.team === TEAMS.ENEMY) {
+        console.log('ℹ️ Player clicked enemy unit (viewing only)');
+        return state;
+      }
+
+      console.log('❌ Không thể select unit này');
+      return state;
+    }
 
     // ----------------------------------------
-    // MOVE UNIT
+    // MOVE UNIT - FIXED ✅
     // ----------------------------------------
     case ACTIONS.MOVE_UNIT: {
-      if (!state.selectedUnit) return state;
+      if (!state.selectedUnit) {
+        console.log('❌ No unit selected for move');
+        return state;
+      }
+
+      // ✅ Kiểm tra hasActed TRƯỚC KHI MOVE
+      if (state.selectedUnit.hasActed) {
+        console.log('❌ Unit đã hành động, không thể move');
+        return state;
+      }
 
       const updatedUnits = state.units.map(u =>
         u.id === state.selectedUnit.id
           ? { ...u, position: action.position }
           : u
       );
-      if (state.selectedUnit.hasActed) {
-  console.log('❌ Unit đã hành động');
-  return state;
-}
+
+      console.log(`✅ ${state.selectedUnit.id} moved to (${action.position.x}, ${action.position.y})`);
 
       return {
         ...state,
@@ -188,24 +202,33 @@ case ACTIONS.SELECT_UNIT: {
     }
 
     // ----------------------------------------
-    // ATTACK UNIT
+    // ATTACK UNIT - FIXED ✅
     // ----------------------------------------
     case ACTIONS.ATTACK_UNIT: {
-      if (!state.selectedUnit) return state;
+      if (!state.selectedUnit) {
+        console.log('❌ No unit selected for attack');
+        return state;
+      }
+
+      // ✅ Kiểm tra hasActed TRƯỚC KHI ATTACK
+      if (state.selectedUnit.hasActed) {
+        console.log('❌ Unit đã hành động, không thể attack');
+        return state;
+      }
 
       const attacker = state.selectedUnit;
       const defender = state.units.find(u => u.id === action.targetId);
 
-      if (!defender) return state;
-
-      if (state.selectedUnit.hasActed) {
-  console.log('❌ Unit đã hành động');
-  return state;
-}
+      if (!defender) {
+        console.log('❌ Defender not found');
+        return state;
+      }
 
       // Calculate damage
       const damageResult = calculateDamage(attacker, defender);
       const newHp = Math.max(0, defender.hp - damageResult.finalDamage);
+
+      console.log(`⚔️ ${attacker.id} attacked ${defender.id} for ${damageResult.finalDamage} damage`);
 
       // Update units
       const updatedUnits = state.units.map(u => {
@@ -243,6 +266,8 @@ case ACTIONS.SELECT_UNIT: {
     // END TURN
     // ----------------------------------------
     case ACTIONS.END_TURN: {
+      console.log(`🔄 Turn ended: ${state.currentTurn}`);
+      
       // Reset hasActed cho tất cả units
       const updatedUnits = state.units.map(u => ({
         ...u,
@@ -253,6 +278,8 @@ case ACTIONS.SELECT_UNIT: {
       const nextTurn = state.currentTurn === TEAMS.PLAYER 
         ? TEAMS.ENEMY 
         : TEAMS.PLAYER;
+
+      console.log(`🔄 Next turn: ${nextTurn}`);
 
       return {
         ...state,
@@ -267,6 +294,7 @@ case ACTIONS.SELECT_UNIT: {
     // ----------------------------------------
     case ACTIONS.RESET_GAME: {
       const level = action.level || state.currentLevel || 1;
+      console.log(`🔄 Game reset to level ${level}`);
       
       return {
         units: createInitialUnits(level),
@@ -283,6 +311,8 @@ case ACTIONS.SELECT_UNIT: {
     // ----------------------------------------
     case ACTIONS.RESTORE_GAME: {
       const { gameState } = action;
+      console.log('📂 Game restored from save');
+      
       return {
         units: gameState.units || createInitialUnits(1),
         selectedUnit: null,
