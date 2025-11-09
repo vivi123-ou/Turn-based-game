@@ -62,50 +62,50 @@ function App() {
   // AI TURN HANDLER - FIXED
   // ============================================
 
-  useEffect(() => {
-    if (state.currentTurn === TEAMS.ENEMY && state.gameStatus === GAME_STATUS.PLAYING) {
-      console.log('🤖 AI Turn Starting...');
-      playTurnStart();
+ useEffect(() => {
+  if (state.currentTurn === TEAMS.ENEMY && state.gameStatus === GAME_STATUS.PLAYING) {
+    console.log('🤖 AI Turn Starting...');
+    playTurnStart();
 
-      const timer = setTimeout(() => {
-        const aiActions = executeAITurn(state.units);
-        console.log('🤖 AI Actions:', aiActions);
-        
-        if (aiActions.length === 0) {
-          console.log('⚠️ No AI actions available, ending turn');
-          dispatch({ type: ACTIONS.END_TURN });
-          return;
-        }
+    const timer = setTimeout(() => {
+      const aiActions = executeAITurn(state.units);
+      console.log('🤖 AI Actions:', aiActions);
+      
+      if (aiActions.length === 0) {
+        console.log('⚠️ No AI actions available, ending turn');
+        dispatch({ type: ACTIONS.END_TURN });
+        return;
+      }
 
-        aiActions.forEach((aiMove, index) => {
-          setTimeout(() => {
-            if (aiMove.action.type === 'MOVE') {
-              console.log('🤖 AI Move:', aiMove.unitId, 'to', aiMove.action.position);
-              dispatch({ type: ACTIONS.SELECT_UNIT, unitId: aiMove.unitId });
-              setTimeout(() => {
-                playMove();
-                dispatch({ type: ACTIONS.MOVE_UNIT, position: aiMove.action.position });
-              }, 300);
-            } else if (aiMove.action.type === 'ATTACK') {
-              console.log('🤖 AI Attack:', aiMove.unitId, '->', aiMove.action.targetId);
-              dispatch({ type: ACTIONS.SELECT_UNIT, unitId: aiMove.unitId });
-              setTimeout(() => {
-                playAttack();
-                dispatch({ type: ACTIONS.ATTACK_UNIT, targetId: aiMove.action.targetId });
-              }, 300);
-            }
-          }, index * 1500);
-        });
-
+      aiActions.forEach((aiMove, index) => {
         setTimeout(() => {
-          console.log('🤖 AI Turn Ended');
-          dispatch({ type: ACTIONS.END_TURN });
-        }, aiActions.length * 1500 + 500);
-      }, 1000);
+          if (aiMove.action.type === 'MOVE') {
+            console.log('🤖 AI Move:', aiMove.unitId, 'to', aiMove.action.position);
+            dispatch({ type: ACTIONS.SELECT_UNIT, unitId: aiMove.unitId });
+            setTimeout(() => {
+              playMove();
+              dispatch({ type: ACTIONS.MOVE_UNIT, position: aiMove.action.position });
+            }, 300);
+          } else if (aiMove.action.type === 'ATTACK') {
+            console.log('🤖 AI Attack:', aiMove.unitId, '->', aiMove.action.targetId);
+            dispatch({ type: ACTIONS.SELECT_UNIT, unitId: aiMove.unitId });
+            setTimeout(() => {
+              playAttack();
+              dispatch({ type: ACTIONS.ATTACK_UNIT, targetId: aiMove.action.targetId });
+            }, 300);
+          }
+        }, index * 1500);
+      });
 
-      return () => clearTimeout(timer);
-    }
-  }, [state.currentTurn, state.gameStatus, state.units]);
+      setTimeout(() => {
+        console.log('🤖 AI Turn Ended');
+        dispatch({ type: ACTIONS.END_TURN });
+      }, aiActions.length * 1500 + 500);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }
+}, [state.currentTurn, state.gameStatus]); 
 
   // ============================================
   // COMBAT LOG SOUND EFFECTS

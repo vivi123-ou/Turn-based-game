@@ -4,6 +4,8 @@ const StoryScreen = ({ levelId, onComplete, onSkip }) => {
   const [currentText, setCurrentText] = useState('');
   const [textIndex, setTextIndex] = useState(0);
   const [showSkipButton, setShowSkipButton] = useState(false);
+  const [isReady, setIsReady] = useState(false);
+const completeCalled = useRef(false);
 
   const stories = {
     1: {
@@ -61,30 +63,34 @@ const StoryScreen = ({ levelId, onComplete, onSkip }) => {
 
   const story = stories[levelId] || stories[1];
 
-  useEffect(() => {
-    // Reset state when level changes
-    setCurrentText('');
-    setTextIndex(0);
-    setShowSkipButton(true);
-  }, [levelId]);
+ // useEffect 1: Reset khi level thay đổi
+useEffect(() => {
+  setIsReady(false);
+  setCurrentText('');
+  setTextIndex(0);
+  completeCalled.current = false;
+  
+  const timer = setTimeout(() => setIsReady(true), 100);
+  return () => clearTimeout(timer);
+}, [levelId]);
 
-  useEffect(() => {
+  // useEffect 2: Chạy animation (CHỈ KHI isReady = true)
+useEffect(() => {
+  if (!isReady) return;
+  
   if (textIndex < story.texts.length) {
-    // Hiển thị text bình thường
-    const timer = setTimeout(() => {
-      setCurrentText(story.texts[textIndex]);
-      setTextIndex(textIndex + 1);
-    }, 2000);
-    return () => clearTimeout(timer);
+    // ... hiển thị text
   } else if (textIndex === story.texts.length && textIndex > 0) {
-    // CHỈ gọi onComplete khi đã chạy hết
-    // textIndex > 0 ngăn chặn chạy khi vừa reset
     const timer = setTimeout(() => {
-      onComplete();
+      if (!completeCalled.current) {
+        completeCalled.current = true;
+        setIsReady(false);
+        onComplete();
+      }
     }, 2000);
     return () => clearTimeout(timer);
   }
-}, [textIndex, story.texts, onComplete]);
+}, [textIndex, isReady, story.texts, onComplete]);
 
   return (
     <div style={{
